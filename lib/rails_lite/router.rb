@@ -12,7 +12,10 @@ class Route
   end
 
   def run(req, res)
-    @controller.new(req, res).invoke_action(action)
+    route_params = {}
+    matched_id = @pattern.match(req.path)[:id]
+    route_params[:id] = matched_id
+    @controller.new(req, res, route_params).invoke_action(action)
   end
 end
 
@@ -34,7 +37,7 @@ class Router
   end
 
   def draw(&proc)
-    proc.call
+    self.instance_eval(&proc)
   end
 
   def match(req)
